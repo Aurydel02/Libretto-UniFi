@@ -1,172 +1,1059 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Libretto</title>
+  <meta name="theme-color" content="#004b8d" />
+  <style>
+    :root {
+      --blue: #004b8d;
+      --blue-dark: #0e3c70;
+      --light-bg: #f3f4f6;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --danger: #b91c1c;
+      --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      --radius: 16px;
+      --maxw: 760px;
+    }
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-<title>Libretto</title>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background: var(--light-bg);
+      color: var(--text);
+      padding-bottom: 92px;
+    }
 
-<meta name="theme-color" content="#004b8d">
+    .app {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      min-height: 100vh;
+      background: var(--light-bg);
+    }
 
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Libretto">
-<meta name="mobile-web-app-capable" content="yes">
+    .topbar {
+      background: var(--blue);
+      color: white;
+      padding: calc(14px + env(safe-area-inset-top)) 14px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      box-shadow: 0 1px 0 rgba(255,255,255,0.05);
+    }
 
-<link rel="apple-touch-icon" href="icon.png">
+    .topbar-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
 
-<style>
+    .topbar-left,
+    .topbar-right {
+      width: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-:root{
---blue:#004b8d;
---blue-dark:#0e3c70;
---light-bg:#f3f4f6;
---card:#ffffff;
---text:#1f2937;
---muted:#6b7280;
---shadow:0 2px 8px rgba(0,0,0,0.08);
---radius:16px;
---maxw:760px;
-}
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 28px;
+      margin: 0;
+      padding: 0;
+      cursor: pointer;
+    }
 
-*{
-box-sizing:border-box;
--webkit-tap-highlight-color:transparent;
-}
+    .topbar-title-wrap {
+      flex: 1;
+      text-align: center;
+    }
 
-body{
-margin:0;
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-background:var(--light-bg);
-color:var(--text);
-padding-bottom:92px;
-}
+    .topbar-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
 
-.app{
-max-width:var(--maxw);
-margin:0 auto;
-min-height:100vh;
-background:var(--light-bg);
-}
+    .menu-wrapper {
+      position: relative;
+    }
 
-.topbar{
-background:var(--blue);
-color:white;
-padding:14px 14px 16px;
-position:sticky;
-top:0;
-z-index:30;
-}
+    .dropdown {
+      position: absolute;
+      right: 0;
+      top: 48px;
+      min-width: 250px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+      overflow: hidden;
+      display: none;
+      z-index: 60;
+    }
 
-.topbar-title{
-text-align:center;
-font-size:17px;
-font-weight:700;
-}
+    .dropdown.show {
+      display: block;
+    }
 
-.tabs{
-display:flex;
-background:#f5f5f5;
-border-bottom:1px solid #d9dee5;
-}
+    .dropdown button,
+    .dropdown label {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: white;
+      border: none;
+      padding: 14px 16px;
+      font-size: 15px;
+      color: var(--text);
+      border-bottom: 1px solid #f0f2f5;
+      cursor: pointer;
+      margin: 0;
+    }
 
-.tab-btn{
-flex:1;
-border:none;
-background:transparent;
-padding:14px;
-font-weight:700;
-color:#4b5563;
-}
+    .dropdown button:last-child,
+    .dropdown label:last-child {
+      border-bottom: none;
+    }
 
-.tab-btn.active{
-color:var(--blue-dark);
-border-bottom:3px solid var(--blue);
-}
+    .dropdown input[type="file"] {
+      display: none;
+    }
 
-.content{
-padding:12px;
-}
+    .container {
+      padding: 0 0 18px;
+    }
 
-.card{
-background:white;
-border-radius:var(--radius);
-box-shadow:var(--shadow);
-padding:20px;
-text-align:center;
-color:var(--muted);
-}
+    .tabs {
+      display: flex;
+      background: #f5f5f5;
+      border-bottom: 1px solid #d9dee5;
+      position: sticky;
+      top: calc(72px + env(safe-area-inset-top));
+      z-index: 20;
+    }
 
-.bottom-nav{
-position:fixed;
-left:0;
-right:0;
-bottom:0;
-background:white;
-border-top:1px solid #d7dbe0;
-display:flex;
-justify-content:space-evenly;
-padding:10px;
-}
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 14px 8px 12px;
+      margin: 0;
+      border-radius: 0;
+      color: #4b5563;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.7px;
+      cursor: pointer;
+    }
 
-.nav-btn{
-background:none;
-border:none;
-text-align:center;
-font-size:12px;
-color:#4b5563;
-}
+    .tab-btn.active {
+      color: var(--blue-dark);
+      border-bottom: 3px solid var(--blue);
+    }
 
-.nav-btn.active{
-color:var(--blue);
-font-weight:700;
-}
+    .content {
+      padding: 12px 10px 0;
+    }
 
-.nav-icon{
-font-size:22px;
-display:block;
-}
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
 
-</style>
+    .exam-card {
+      padding: 16px 16px 14px;
+      position: relative;
+      min-height: 110px;
+      border: 1px solid #e8ebef;
+    }
 
+    .exam-title {
+      color: var(--blue-dark);
+      font-size: 17px;
+      line-height: 1.2;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      padding-right: 62px;
+    }
+
+    .exam-line {
+      font-size: 15px;
+      line-height: 1.35;
+      margin-bottom: 4px;
+    }
+
+    .vote-badge {
+      position: absolute;
+      top: 16px;
+      right: 14px;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: var(--blue);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 34px 16px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .dashboard-section {
+      padding: 14px 10px 0;
+    }
+
+    .summary-card {
+      background: white;
+      border-radius: 0;
+      box-shadow: none;
+      padding: 18px 16px;
+      border-bottom: 1px solid #eef1f4;
+      margin-bottom: 0;
+    }
+
+    .metric-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .metric-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .metric-label {
+      color: var(--blue);
+      font-size: 17px;
+      line-height: 1.2;
+    }
+
+    .progress-wrap {
+      width: 100%;
+      height: 14px;
+      background: #f0f2f5;
+      border-radius: 0;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: #dfe8f5;
+    }
+
+    .metric-right {
+      font-size: 16px;
+      color: #111827;
+      white-space: nowrap;
+    }
+
+    .panel {
+      background: white;
+      padding: 22px 16px;
+      border-bottom: 1px solid #eef1f4;
+    }
+
+    .panel-title {
+      font-size: 18px;
+      color: var(--blue);
+      text-align: center;
+      margin: 0 0 18px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .activity-wrap {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .donut-box {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .legend {
+      font-size: 14px;
+      color: #374151;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .legend-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      row-gap: 14px;
+      column-gap: 12px;
+      align-items: center;
+      font-size: 16px;
+    }
+
+    .info-grid .value {
+      color: var(--blue);
+      font-weight: 400;
+      font-size: 17px;
+    }
+
+    .chart-card {
+      background: white;
+      padding: 18px 12px 16px;
+      border-bottom: 1px solid #eef1f4;
+    }
+
+    .chart-title {
+      text-align: center;
+      color: var(--blue);
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .chart-legend {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      align-items: center;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .line-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: white;
+      border-top: 1px solid #d7dbe0;
+      display: flex;
+      justify-content: space-evenly;
+      padding: 8px 8px calc(10px + env(safe-area-inset-bottom));
+      z-index: 40;
+    }
+
+    .nav-btn {
+      width: auto;
+      min-width: 110px;
+      background: none;
+      border: none;
+      margin: 0;
+      color: #4b5563;
+      font-size: 12px;
+      text-align: center;
+      padding: 4px 6px;
+      cursor: pointer;
+    }
+
+    .nav-icon {
+      display: block;
+      font-size: 22px;
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .nav-btn.active {
+      color: var(--blue);
+      font-weight: 700;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.38);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 80;
+      padding: 14px;
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 430px;
+      background: white;
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 16px 34px rgba(0,0,0,0.22);
+    }
+
+    .modal-title {
+      color: var(--blue);
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .modal input {
+      width: 100%;
+      border: 1px solid #d7dde5;
+      border-radius: 13px;
+      padding: 13px 14px;
+      font-size: 16px;
+      margin-top: 10px;
+      appearance: none;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .btn {
+      flex: 1;
+      border: none;
+      border-radius: 13px;
+      padding: 13px 14px;
+      font-size: 15px;
+      font-weight: 800;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .btn.secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .btn.primary {
+      background: var(--blue);
+      color: white;
+    }
+
+    .helper {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 420px) {
+      .activity-wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .metric-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .metric-right {
+        text-align: right;
+      }
+    }
+  </style>
 </head>
 <body>
+  <div class="app">
+    <header class="topbar">
+      <div class="topbar-row">
+        <div class="topbar-left"></div>
 
-<div class="app">
+        <div class="topbar-title-wrap">
+          <div class="topbar-title" id="pageTitle">Libretto</div>
+        </div>
 
-<header class="topbar">
-<div class="topbar-title">Libretto</div>
-</header>
+        <div class="topbar-right">
+          <div class="menu-wrapper">
+            <button class="icon-btn" onclick="toggleMenu()" aria-label="Menu">⋯</button>
 
-<div class="tabs">
-<button class="tab-btn active">SUPERATI</button>
-<button class="tab-btn">PIANIFICATI</button>
-</div>
+            <div class="dropdown" id="dropdownMenu">
+              <button onclick="apriModal('superato')">Aggiungi esame superato</button>
+              <button onclick="apriModal('pianificato')">Aggiungi esame pianificato</button>
+              <button onclick="esportaBackup()">Esporta backup</button>
+              <label>
+                Importa backup
+                <input type="file" id="importFile" accept=".json,application/json" onchange="importaBackup(event)" />
+              </label>
+              <button onclick="resetTotale()">Azzera tutto</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
 
-<div class="content">
+    <main class="container">
+      <section id="librettoPage">
+        <div class="tabs">
+          <button class="tab-btn active" id="btnSuperati" onclick="mostraTab('superato')">SUPERATI</button>
+          <button class="tab-btn" id="btnPianificati" onclick="mostraTab('pianificato')">PIANIFICATI</button>
+        </div>
 
-<div class="card">
-Nessun esame superato.
-</div>
+        <div class="content">
+          <div id="listaEsami"></div>
+        </div>
+      </section>
 
-</div>
+      <section id="cruscottoPage" style="display:none;">
+        <div class="dashboard-section">
+          <div class="summary-card">
+            <div class="metric-row">
+              <div class="metric-label">CFU CALCOLATI</div>
+              <div class="progress-wrap">
+                <div class="progress-bar" id="cfuCalcBar" style="width:0%;"></div>
+              </div>
+              <div class="metric-right" id="cfuCalcText">0 / 360</div>
+            </div>
 
-<nav class="bottom-nav">
+            <div class="metric-row">
+              <div class="metric-label">CFU CONVALIDATI</div>
+              <div class="progress-wrap">
+                <div class="progress-bar" id="cfuConvBar" style="width:0%;"></div>
+              </div>
+              <div class="metric-right" id="cfuConvText">0 / 360</div>
+            </div>
+          </div>
 
-<button class="nav-btn">
-<span class="nav-icon">⌂</span>
-Cruscotto
-</button>
+          <div class="panel">
+            <div class="panel-title">ATTIVITÀ</div>
+            <div class="activity-wrap">
+              <div class="donut-box">
+                <canvas id="donutCanvas" width="160" height="160"></canvas>
+              </div>
+              <div class="legend">
+                <div class="legend-item">
+                  <span class="legend-dot" style="background:#0b4a8b;"></span>
+                  <span><span id="completedCount">0</span> Attività completate</span>
+                </div>
+                <div class="legend-item">
+                  <span class="legend-dot" style="background:#a30000;"></span>
+                  <span><span id="plannedCount">0</span> Attività pianificate da completare</span>
+                </div>
+              </div>
+            </div>
+          </div>
 
-<button class="nav-btn active">
-<span class="nav-icon">🎓</span>
-Libretto
-</button>
+          <div class="panel">
+            <div class="info-grid">
+              <div>Media Aritmetica degli esami</div>
+              <div class="value" id="mediaAritmetica">0.00</div>
 
-</nav>
+              <div>Media Ponderata degli esami</div>
+              <div class="value" id="mediaPonderata">0.00</div>
+            </div>
+          </div>
 
-</div>
+          <div class="chart-card">
+            <div class="chart-title">PROGRESSIONI</div>
+            <div class="chart-legend">
+              <div><span class="line-dot" style="background:#0b4a8b;"></span> Voto</div>
+              <div><span class="line-dot" style="background:#a30000;"></span> Media</div>
+            </div>
+            <canvas id="lineCanvas" width="700" height="280"></canvas>
+          </div>
+        </div>
+      </section>
+    </main>
 
+    <nav class="bottom-nav">
+      <button class="nav-btn active" id="navHome" onclick="cambiaPagina('cruscotto')">
+        <span class="nav-icon">⌂</span>
+        Cruscotto
+      </button>
+
+      <button class="nav-btn" id="navLibretto" onclick="cambiaPagina('libretto')">
+        <span class="nav-icon">🎓</span>
+        Libretto
+      </button>
+    </nav>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal">
+      <div class="modal-title" id="modalTitle">Aggiungi esame</div>
+
+      <input id="nomeEsame" placeholder="Nome esame" />
+      <input id="codiceEsame" placeholder="Codice AD (facoltativo)" />
+      <input id="cfuEsame" type="number" placeholder="CFU" min="1" />
+      <input id="votoEsame" type="number" placeholder="Voto" min="18" max="30" />
+
+      <div class="helper" id="helperText">
+        Per gli esami pianificati il voto non serve.
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn secondary" onclick="chiudiModal()">Annulla</button>
+        <button class="btn primary" onclick="salvaEsame()">Salva</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "libretto_app_data_v2";
+    const TOTALE_CFU = 360;
+
+    let esami = [];
+    let tabCorrente = "superato";
+    let tipoModal = "superato";
+
+    function caricaStorage() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        esami = raw ? JSON.parse(raw) : [];
+        if (!Array.isArray(esami)) esami = [];
+      } catch {
+        esami = [];
+      }
+    }
+
+    function salvaStorage() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(esami));
+    }
+
+    function toggleMenu() {
+      document.getElementById("dropdownMenu").classList.toggle("show");
+    }
+
+    function chiudiMenu() {
+      document.getElementById("dropdownMenu").classList.remove("show");
+    }
+
+    function apriModal(tipo) {
+      tipoModal = tipo;
+      chiudiMenu();
+
+      document.getElementById("modalTitle").textContent =
+        tipo === "superato" ? "Aggiungi esame superato" : "Aggiungi esame pianificato";
+
+      document.getElementById("nomeEsame").value = "";
+      document.getElementById("codiceEsame").value = "";
+      document.getElementById("cfuEsame").value = "";
+      document.getElementById("votoEsame").value = "";
+
+      const votoInput = document.getElementById("votoEsame");
+      const helper = document.getElementById("helperText");
+
+      if (tipo === "pianificato") {
+        votoInput.style.display = "none";
+        helper.textContent = "Per gli esami pianificati il voto non serve.";
+      } else {
+        votoInput.style.display = "block";
+        helper.textContent = "Per un esame superato inserisci un voto da 18 a 30.";
+      }
+
+      document.getElementById("modalBackdrop").classList.add("show");
+    }
+
+    function chiudiModal() {
+      document.getElementById("modalBackdrop").classList.remove("show");
+    }
+
+    function salvaEsame() {
+      const nome = document.getElementById("nomeEsame").value.trim();
+      const codice = document.getElementById("codiceEsame").value.trim();
+      const cfu = parseInt(document.getElementById("cfuEsame").value, 10);
+      const votoVal = document.getElementById("votoEsame").value;
+      const voto = votoVal ? parseInt(votoVal, 10) : null;
+
+      if (!nome) {
+        alert("Inserisci il nome dell'esame.");
+        return;
+      }
+
+      if (!cfu || cfu <= 0) {
+        alert("Inserisci dei CFU validi.");
+        return;
+      }
+
+      if (tipoModal === "superato" && (!voto || voto < 18 || voto > 30)) {
+        alert("Inserisci un voto tra 18 e 30.");
+        return;
+      }
+
+      esami.push({
+        id: Date.now(),
+        nome,
+        codice,
+        cfu,
+        voto: tipoModal === "superato" ? voto : null,
+        stato: tipoModal,
+        dataInserimento: new Date().toISOString()
+      });
+
+      salvaStorage();
+      chiudiModal();
+      render();
+    }
+
+    function resetTotale() {
+      chiudiMenu();
+      if (!confirm("Vuoi cancellare tutti gli esami salvati?")) return;
+      esami = [];
+      salvaStorage();
+      render();
+    }
+
+    function mostraTab(tab) {
+      tabCorrente = tab;
+      document.getElementById("btnSuperati").classList.toggle("active", tab === "superato");
+      document.getElementById("btnPianificati").classList.toggle("active", tab === "pianificato");
+      renderLista();
+    }
+
+    function renderLista() {
+      const lista = document.getElementById("listaEsami");
+      const filtrati = esami.filter(e => e.stato === tabCorrente);
+
+      if (filtrati.length === 0) {
+        lista.innerHTML = `
+          <div class="card empty">
+            Nessun esame ${tabCorrente === "superato" ? "superato" : "pianificato"}.
+          </div>
+        `;
+        return;
+      }
+
+      lista.innerHTML = filtrati.map(e => `
+        <div class="card exam-card">
+          ${e.stato === "superato" ? `<div class="vote-badge">${e.voto}</div>` : ``}
+          <div class="exam-title">${escapeHtml(e.nome)}</div>
+          ${e.codice ? `<div class="exam-line"><strong>Codice AD:</strong> ${escapeHtml(e.codice)}</div>` : ``}
+          <div class="exam-line"><strong>${e.cfu} CFU</strong></div>
+        </div>
+      `).join("");
+    }
+
+    function datiSuperati() {
+      return esami.filter(e => e.stato === "superato");
+    }
+
+    function datiPianificati() {
+      return esami.filter(e => e.stato === "pianificato");
+    }
+
+    function calcolaStatistiche() {
+      const superati = datiSuperati();
+      const pianificati = datiPianificati();
+
+      const cfuOttenuti = superati.reduce((s, e) => s + e.cfu, 0);
+      const mediaAritmetica = superati.length
+        ? superati.reduce((s, e) => s + e.voto, 0) / superati.length
+        : 0;
+
+      const pesataSomma = superati.reduce((s, e) => s + (e.voto * e.cfu), 0);
+      const cfuPesata = superati.reduce((s, e) => s + e.cfu, 0);
+      const mediaPonderata = cfuPesata ? pesataSomma / cfuPesata : 0;
+
+      return {
+        superati,
+        pianificati,
+        cfuOttenuti,
+        mediaAritmetica,
+        mediaPonderata
+      };
+    }
+
+    function aggiornaCruscotto() {
+      const stats = calcolaStatistiche();
+      const perc = Math.min((stats.cfuOttenuti / TOTALE_CFU) * 100, 100).toFixed(2);
+
+      document.getElementById("cfuCalcBar").style.width = perc + "%";
+      document.getElementById("cfuConvBar").style.width = perc + "%";
+      document.getElementById("cfuCalcText").textContent = `${stats.cfuOttenuti} / ${TOTALE_CFU}`;
+      document.getElementById("cfuConvText").textContent = `${stats.cfuOttenuti} / ${TOTALE_CFU}`;
+
+      document.getElementById("completedCount").textContent = stats.superati.length;
+      document.getElementById("plannedCount").textContent = stats.pianificati.length;
+      document.getElementById("mediaAritmetica").textContent = stats.mediaAritmetica.toFixed(2);
+      document.getElementById("mediaPonderata").textContent = stats.mediaPonderata.toFixed(2);
+
+      drawDonut(stats.superati.length, stats.pianificati.length);
+      drawLineChart(stats.superati, stats.mediaAritmetica);
+    }
+
+    function cambiaPagina(pagina) {
+      chiudiMenu();
+
+      const librettoPage = document.getElementById("librettoPage");
+      const cruscottoPage = document.getElementById("cruscottoPage");
+      const title = document.getElementById("pageTitle");
+
+      document.getElementById("navHome").classList.remove("active");
+      document.getElementById("navLibretto").classList.remove("active");
+
+      if (pagina === "libretto") {
+        librettoPage.style.display = "block";
+        cruscottoPage.style.display = "none";
+        title.textContent = "Libretto";
+        document.getElementById("navLibretto").classList.add("active");
+      } else {
+        librettoPage.style.display = "none";
+        cruscottoPage.style.display = "block";
+        title.textContent = "Cruscotto";
+        document.getElementById("navHome").classList.add("active");
+        aggiornaCruscotto();
+      }
+    }
+
+    function esportaBackup() {
+      chiudiMenu();
+      const payload = {
+        versione: 1,
+        totaleCfu: TOTALE_CFU,
+        esami
+      };
+
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "backup-libretto.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importaBackup(event) {
+      chiudiMenu();
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (!data || !Array.isArray(data.esami)) {
+            throw new Error("Formato non valido");
+          }
+
+          esami = data.esami.map(item => ({
+            id: item.id || Date.now() + Math.random(),
+            nome: item.nome || "",
+            codice: item.codice || "",
+            cfu: Number(item.cfu) || 0,
+            voto: item.voto === null || item.voto === undefined ? null : Number(item.voto),
+            stato: item.stato === "pianificato" ? "pianificato" : "superato",
+            dataInserimento: item.dataInserimento || new Date().toISOString()
+          }));
+
+          salvaStorage();
+          render();
+          alert("Backup importato correttamente.");
+        } catch {
+          alert("File di backup non valido.");
+        } finally {
+          event.target.value = "";
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function drawDonut(doneCount, plannedCount) {
+      const canvas = document.getElementById("donutCanvas");
+      const ctx = canvas.getContext("2d");
+      const w = canvas.width;
+      const h = canvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
+      const r = 46;
+      const lineW = 24;
+      const total = doneCount + plannedCount;
+
+      ctx.clearRect(0, 0, w, h);
+
+      ctx.beginPath();
+      ctx.lineWidth = lineW;
+      ctx.strokeStyle = "#eceff3";
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.stroke();
+
+      if (total === 0) return;
+
+      const start = -Math.PI / 2;
+      const doneAngle = (doneCount / total) * Math.PI * 2;
+
+      ctx.beginPath();
+      ctx.lineWidth = lineW;
+      ctx.strokeStyle = "#0b4a8b";
+      ctx.arc(cx, cy, r, start, start + doneAngle);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.lineWidth = lineW;
+      ctx.strokeStyle = "#a30000";
+      ctx.arc(cx, cy, r, start + doneAngle, start + Math.PI * 2);
+      ctx.stroke();
+    }
+
+    function drawLineChart(superati, media) {
+      const canvas = document.getElementById("lineCanvas");
+      const ctx = canvas.getContext("2d");
+
+      const ratio = window.devicePixelRatio || 1;
+      const cssWidth = canvas.clientWidth || 700;
+      const cssHeight = 260;
+
+      canvas.width = cssWidth * ratio;
+      canvas.height = cssHeight * ratio;
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+      const width = cssWidth;
+      const height = cssHeight;
+
+      ctx.clearRect(0, 0, width, height);
+
+      const left = 40;
+      const right = width - 16;
+      const top = 20;
+      const bottom = height - 28;
+      const chartW = right - left;
+      const chartH = bottom - top;
+
+      const minY = 20;
+      const maxY = 30;
+
+      function yForValue(v) {
+        return bottom - ((v - minY) / (maxY - minY)) * chartH;
+      }
+
+      ctx.strokeStyle = "#d7dbe0";
+      ctx.lineWidth = 1;
+      ctx.fillStyle = "#6b7280";
+      ctx.font = "12px Arial";
+
+      for (let v = minY; v <= maxY; v += 2) {
+        const y = yForValue(v);
+        ctx.beginPath();
+        ctx.moveTo(left, y);
+        ctx.lineTo(right, y);
+        ctx.stroke();
+        ctx.fillText(String(v), 8, y + 4);
+      }
+
+      if (superati.length === 0) {
+        ctx.fillStyle = "#6b7280";
+        ctx.font = "14px Arial";
+        ctx.fillText("Nessun dato disponibile", left + 20, top + 40);
+        return;
+      }
+
+      const points = superati.map((e, i) => {
+        const x = superati.length === 1
+          ? left + chartW / 2
+          : left + (i * chartW) / (superati.length - 1);
+        const y = yForValue(e.voto);
+        return { x, y, voto: e.voto };
+      });
+
+      const mediaY = yForValue(media);
+      ctx.strokeStyle = "#a30000";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(left, mediaY);
+      ctx.lineTo(right, mediaY);
+      ctx.stroke();
+
+      ctx.strokeStyle = "#0b4a8b";
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      points.forEach((p, i) => {
+        if (i === 0) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+      });
+      ctx.stroke();
+
+      ctx.fillStyle = "#0b4a8b";
+      points.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 4.5, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function render() {
+      renderLista();
+      aggiornaCruscotto();
+    }
+
+    document.addEventListener("click", function(event) {
+      const wrapper = document.querySelector(".menu-wrapper");
+      if (wrapper && !wrapper.contains(event.target)) {
+        chiudiMenu();
+      }
+    });
+
+    document.getElementById("modalBackdrop").addEventListener("click", function(event) {
+      if (event.target.id === "modalBackdrop") {
+        chiudiModal();
+      }
+    });
+
+    window.addEventListener("resize", function() {
+      if (document.getElementById("cruscottoPage").style.display !== "none") {
+        aggiornaCruscotto();
+      }
+    });
+
+    caricaStorage();
+    render();
+    cambiaPagina("libretto");
+  </script>
 </body>
 </html>
